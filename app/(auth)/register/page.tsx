@@ -7,12 +7,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { useState } from "react";
 
-import type { Metadata } from "next";
-
-
-
-// Skema validasi form register
 const registerSchema = z.object({
   username: z.string().min(3, "Username minimal 3 karakter"),
   email: z.string().email("Email tidak valid"),
@@ -26,6 +22,7 @@ type RegisterForm = z.infer<typeof registerSchema>;
 export default function RegisterPage() {
   const { register: registerUser } = useAuth();
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -35,7 +32,6 @@ export default function RegisterPage() {
     resolver: zodResolver(registerSchema),
   });
 
-  // Proses register lalu redirect ke login kalau berhasil
   const onSubmit = async (data: RegisterForm) => {
     try {
       await registerUser({
@@ -57,7 +53,6 @@ export default function RegisterPage() {
         <h1 className="text-2xl font-bold text-white mb-6 text-center">Register</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          {/* Input Username */}
           <div>
             <label className="text-sm text-gray-400 mb-1 block">Username</label>
             <input
@@ -71,7 +66,6 @@ export default function RegisterPage() {
             )}
           </div>
 
-          {/* Input Email */}
           <div>
             <label className="text-sm text-gray-400 mb-1 block">Email</label>
             <input
@@ -85,21 +79,30 @@ export default function RegisterPage() {
             )}
           </div>
 
-          {/* Input Password */}
+          {/* Input password dengan toggle show/hide */}
           <div>
             <label className="text-sm text-gray-400 mb-1 block">Password</label>
-            <input
-              {...register("password")}
-              type="password"
-              placeholder="••••••••"
-              className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500"
-            />
+            <div className="relative">
+              <input
+                {...register("password")}
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 pr-12"
+              />
+              {/* Tombol toggle show/hide password */}
+              <button
+                type="button"
+                onClick={() => setShowPassword((p) => !p)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-sm"
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-red-400 text-xs mt-1">{errors.password.message}</p>
             )}
           </div>
 
-          {/* Input Display Name */}
           <div>
             <label className="text-sm text-gray-400 mb-1 block">Display Name</label>
             <input
@@ -113,9 +116,10 @@ export default function RegisterPage() {
             )}
           </div>
 
-          {/* Input Bio (opsional) */}
           <div>
-            <label className="text-sm text-gray-400 mb-1 block">Bio <span className="text-gray-600">(opsional)</span></label>
+            <label className="text-sm text-gray-400 mb-1 block">
+              Bio <span className="text-gray-600">(opsional)</span>
+            </label>
             <textarea
               {...register("bio")}
               placeholder="Ceritakan sedikit tentang dirimu..."
@@ -124,7 +128,6 @@ export default function RegisterPage() {
             />
           </div>
 
-          {/* Tombol Submit */}
           <button
             type="submit"
             disabled={isSubmitting}
@@ -134,7 +137,6 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        {/* Link ke login */}
         <p className="text-gray-400 text-sm text-center mt-4">
           Sudah punya akun?{" "}
           <Link href="/login" className="text-blue-400 hover:underline">

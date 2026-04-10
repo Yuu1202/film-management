@@ -24,7 +24,7 @@ export default function GenresPage() {
 
       {/* Grid semua genre */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {genres?.map((genre) => (
+        {genres?.map((genre: { id: string; name: string }) => (
           <div
             key={genre.id}
             className="bg-gray-800 hover:bg-gray-700 rounded-xl px-5 py-4 text-center transition cursor-default"

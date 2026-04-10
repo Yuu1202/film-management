@@ -1,64 +1,91 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useFilms } from "@/hooks/useFilms";
+import { useDebounce } from "@/hooks/useDebounce";
 import Link from "next/link";
-import { useAuthStore } from "@/stores/authStore";
 
 export default function HomePage() {
-  const { user } = useAuthStore();
+  const router = useRouter();
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
+
+  const { data: filmsData, isLoading: filmsLoading } = useFilms(1, debouncedSearch);
+
+  const films = filmsData?.data ?? [];
+
+  // Submit search → navigasi ke halaman films dengan query
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (search.trim()) {
+      router.push(`/films?search=${encodeURIComponent(search)}`);
+    }
+  };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
-      {/* Hero Section */}
-      <h1 className="text-5xl font-bold text-white mb-4">
-        🎬 FilmApp
-      </h1>
-      <p className="text-gray-400 text-lg max-w-md mb-8">
-        Temukan, ulas, dan simpan film favoritmu. Semua dalam satu tempat.
-      </p>
+    <div className="max-w-7xl mx-auto px-6 py-10">
 
-      {/* Tombol CTA berdasarkan status login */}
-      <div className="flex gap-4">
-        <Link
-          href="/films"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition"
-        >
-          Jelajahi Film
-        </Link>
+      {/* Hero + Search */}
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold text-white mb-3">🎬 FilmApp</h1>
+        <p className="text-gray-400 mb-6">Temukan, ulas, dan simpan film favoritmu.</p>
 
-        {!user ? (
-          <Link
-            href="/register"
-            className="bg-gray-700 hover:bg-gray-600 text-white font-semibold px-6 py-3 rounded-xl transition"
+        {/* Search bar */}
+        <form onSubmit={handleSearchSubmit} className="flex gap-2 max-w-lg mx-auto">
+          <input
+            type="text"
+            placeholder="Cari film..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 bg-gray-800 text-white px-4 py-3 rounded-xl border border-gray-700 focus:outline-none focus:border-blue-500"
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition font-semibold"
           >
-            Daftar Sekarang
-          </Link>
-        ) : (
-          <Link
-            href="/profile"
-            className="bg-gray-700 hover:bg-gray-600 text-white font-semibold px-6 py-3 rounded-xl transition"
-          >
-            Lihat Profil
-          </Link>
-        )}
+            Cari
+          </button>
+        </form>
       </div>
 
-      {/* Quick links admin */}
-      {user?.role === "admin" && (
-        <div className="mt-8 flex gap-3">
-          <Link
-            href="/admin/genres"
-            className="text-yellow-400 hover:underline text-sm"
-          >
-            ⚙️ Kelola Genre
-          </Link>
-          <Link
-            href="/admin/films"
-            className="text-yellow-400 hover:underline text-sm"
-          >
-            ➕ Tambah Film
+      {/* Film List Preview */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-white">
+            {search ? `Hasil: "${search}"` : "🔥 Film Terbaru"}
+          </h2>
+          <Link href="/films" className="text-blue-400 hover:underline text-sm">
+            Lihat Semua →
           </Link>
         </div>
-      )}
+
+        {filmsLoading && <p className="text-gray-400 text-sm">Memuat film...</p>}
+
+        {!filmsLoading && films.length === 0 && (
+          <p className="text-gray-500 text-sm">Tidak ada film ditemukan.</p>
+        )}
+
+        {/* Grid film preview — max 12 */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          {films.slice(0, 12).map((film: any) => (
+            <Link key={film.id} href={`/films/${film.id}`}>
+              <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition cursor-pointer">
+                <div className="w-full aspect-[2/3] bg-gray-700 flex items-center justify-center">
+                  <span className="text-gray-500 text-xs text-center px-2">{film.title}</span>
+                </div>
+                <div className="p-2">
+                  <p className="text-white text-sm font-medium truncate">{film.title}</p>
+                  <p className="text-gray-400 text-xs">{film.release_date?.slice(0, 4)}</p>
+                  {film.average_rating > 0 && (
+                    <p className="text-yellow-400 text-xs">⭐ {film.average_rating}</p>
+                  )}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

@@ -6,9 +6,9 @@ import { z } from "zod";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
 
-// Skema validasi form ulasan
+// Skema validasi form ulasan — field comment sesuai API
 const reviewSchema = z.object({
-  content: z.string().min(10, "Ulasan minimal 10 karakter"),
+  comment: z.string().min(10, "Ulasan minimal 10 karakter"),
   rating: z.number().min(1).max(10),
 });
 
@@ -31,10 +31,14 @@ export default function ReviewForm({ filmId, onSuccess }: Props) {
     defaultValues: { rating: 7 },
   });
 
-  // Kirim ulasan ke API lalu reset form
+  // Kirim ulasan ke API dengan field yang benar
   const onSubmit = async (data: ReviewFormData) => {
     try {
-      await api.post("/reviews", { ...data, film_id: filmId });
+      await api.post("/reviews", {
+        film_id: filmId,
+        comment: data.comment,
+        rating: data.rating,
+      });
       toast.success("Ulasan berhasil dikirim!");
       reset();
       onSuccess();
@@ -49,13 +53,13 @@ export default function ReviewForm({ filmId, onSuccess }: Props) {
 
       {/* Input konten ulasan */}
       <textarea
-        {...register("content")}
+        {...register("comment")}
         placeholder="Tulis pendapatmu tentang film ini..."
         rows={4}
         className="w-full bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-blue-500 resize-none mb-2"
       />
-      {errors.content && (
-        <p className="text-red-400 text-xs mb-2">{errors.content.message}</p>
+      {errors.comment && (
+        <p className="text-red-400 text-xs mb-2">{errors.comment.message}</p>
       )}
 
       {/* Input rating */}

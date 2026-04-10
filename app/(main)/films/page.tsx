@@ -5,10 +5,6 @@ import { useFilms } from "@/hooks/useFilms";
 import Link from "next/link";
 import { useDebounce } from "@/hooks/useDebounce";
 
-import type { Metadata } from "next";
-
-
-
 export default function FilmsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -16,6 +12,10 @@ export default function FilmsPage() {
   // Debounce search agar tidak spam request tiap ketikan
   const debouncedSearch = useDebounce(search, 500);
   const { data, isLoading, isError } = useFilms(page, debouncedSearch);
+
+  // Data film ada di data.data, meta pagination ada di data.meta
+  const films = data?.data ?? [];
+  const meta = data?.meta?.[0];
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
@@ -28,7 +28,7 @@ export default function FilmsPage() {
         value={search}
         onChange={(e) => {
           setSearch(e.target.value);
-          setPage(1); // Reset ke halaman pertama saat search berubah
+          setPage(1);
         }}
         className="w-full max-w-md bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 mb-8"
       />
@@ -44,26 +44,30 @@ export default function FilmsPage() {
       )}
 
       {/* Grid Film */}
-      {data && (
+      {!isLoading && !isError && (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {data.data.map((film) => (
+            {films.map((film: any) => (
               <Link key={film.id} href={`/films/${film.id}`}>
                 <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition cursor-pointer">
                   {/* Poster Film */}
                   <img
-                    src={film.poster_url || "/placeholder.png"}
+                    src={film.images?.[0] ?? "/placeholder.png"}
                     alt={film.title}
                     className="w-full aspect-[2/3] object-cover"
                   />
                   <div className="p-2">
                     <p className="text-white text-sm font-medium truncate">{film.title}</p>
-                    <p className="text-gray-400 text-xs">{film.release_year}</p>
+                    <p className="text-gray-400 text-xs">{film.release_date?.slice(0, 4)}</p>
                   </div>
                 </div>
               </Link>
             ))}
           </div>
+
+          {films.length === 0 && (
+            <p className="text-gray-500 text-center py-20">Tidak ada film ditemukan.</p>
+          )}
 
           {/* Pagination */}
           <div className="flex items-center justify-center gap-4 mt-10">
@@ -74,10 +78,12 @@ export default function FilmsPage() {
             >
               ← Prev
             </button>
-            <span className="text-gray-400 text-sm">Halaman {page}</span>
+            <span className="text-gray-400 text-sm">
+              Halaman {page} dari {meta?.total_page ?? "?"}
+            </span>
             <button
               onClick={() => setPage((p) => p + 1)}
-              disabled={data.data.length < 12}
+              disabled={!meta || page >= meta.total_page}
               className="bg-gray-700 hover:bg-gray-600 disabled:opacity-40 text-white px-4 py-2 rounded-lg transition"
             >
               Next →

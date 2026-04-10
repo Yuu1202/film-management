@@ -3,7 +3,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { useAuthStore } from "@/stores/authStore";
-import { FilmList } from "@/types";
 import ProtectedRoute from "@/components/layout/ProtectedRoute";
 import toast from "react-hot-toast";
 
@@ -19,75 +18,67 @@ function ProfileContent() {
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
 
-  // Ambil daftar watchlist milik user yang sedang login
-  const { data: watchlist, isLoading } = useQuery({
-    queryKey: ["watchlist"],
+  // Ambil data user lengkap termasuk film_lists
+  const { data: userData, isLoading } = useQuery({
+    queryKey: ["profile", user?.id],
     queryFn: async () => {
-      const res = await api.get("/film-lists");
-      return res.data.data as FilmList[];
+      const res = await api.get(`/users/${user?.id}`);
+      return res.data.data;
     },
+    enabled: !!user?.id,
   });
 
-  // Mutation untuk ubah visibilitas watchlist item
+  // Mutation untuk ubah visibilitas watchlist
   const toggleVisibility = useMutation({
-    mutationFn: async ({ id, visibility }: { id: string; visibility: "public" | "private" }) => {
-      await api.patch(`/film-lists/${id}`, { visibility });
+    mutationFn: async ({ id, visibility }: { id: string; visibility: string }) => {
+      const res = await api.patch(`/film-lists/${id}`, { visibility });
+      return res.data;
     },
     onSuccess: () => {
       toast.success("Visibilitas diperbarui!");
-      // Refresh data watchlist setelah update
-      queryClient.invalidateQueries({ queryKey: ["watchlist"] });
+      // Invalidate query agar data watchlist refresh
+      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
     },
-    onError: () => {
-      toast.error("Gagal mengubah visibilitas");
+    onError: (err: any) => {
+      toast.error(err?.response?.data?.error ?? "Gagal mengubah visibilitas");
     },
   });
 
+  const watchlist = userData?.film_lists ?? [];
+
   return (
     <div className="max-w-3xl mx-auto px-6 py-10">
-      {/* Info profil user */}
+      {/* Info profil */}
       <div className="bg-gray-800 rounded-xl p-8 mb-8 text-center">
         <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
           {user?.display_name?.charAt(0).toUpperCase()}
         </div>
         <h1 className="text-2xl font-bold text-white mb-1">{user?.display_name}</h1>
         <p className="text-gray-400 text-sm mb-2">@{user?.username}</p>
-        {user?.bio && (
-          <p className="text-gray-300 text-sm">{user.bio}</p>
-        )}
+        {user?.bio && <p className="text-gray-300 text-sm">{user.bio}</p>}
       </div>
 
-      {/* Daftar Watchlist */}
+      {/* Watchlist */}
       <h2 className="text-xl font-bold text-white mb-4">🎬 Watchlist Saya</h2>
 
-      {isLoading && (
-        <p className="text-gray-400">Memuat watchlist...</p>
-      )}
+      {isLoading && <p className="text-gray-400">Memuat watchlist...</p>}
 
-      {watchlist?.length === 0 && (
+      {!isLoading && watchlist.length === 0 && (
         <p className="text-gray-500">Belum ada film di watchlist.</p>
       )}
 
       <div className="flex flex-col gap-4">
-        {watchlist?.map((item) => (
+        {watchlist.map((item: any) => (
           <div
             key={item.id}
             className="bg-gray-800 rounded-xl p-4 flex items-center justify-between"
           >
-            {/* Info film */}
-            <div className="flex items-center gap-4">
-              <img
-                src={item.film?.poster_url || "/placeholder.png"}
-                alt={item.film?.title}
-                className="w-12 h-16 object-cover rounded-lg"
-              />
-              <div>
-                <p className="text-white font-medium">{item.film?.title}</p>
-                <p className="text-gray-400 text-xs">{item.film?.release_year}</p>
-              </div>
+            <div>
+              <p className="text-white font-medium">{item.film_title}</p>
+              <p className="text-gray-400 text-xs capitalize">{item.list_status}</p>
             </div>
 
-            {/* Toggle visibilitas public/private */}
+            {/* Toggle visibility — optimistic update */}
             <button
               onClick={() =>
                 toggleVisibility.mutate({
@@ -95,7 +86,8 @@ function ProfileContent() {
                   visibility: item.visibility === "public" ? "private" : "public",
                 })
               }
-              className={`text-xs px-3 py-1 rounded-full transition ${
+              disabled={toggleVisibility.isPending}
+              className={`text-xs px-3 py-1 rounded-full transition disabled:opacity-50 ${
                 item.visibility === "public"
                   ? "bg-green-600 hover:bg-green-700"
                   : "bg-gray-600 hover:bg-gray-500"
