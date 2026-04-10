@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useFilms } from "@/hooks/useFilms";
 import Link from "next/link";
 import { useDebounce } from "@/hooks/useDebounce";
+import FilmPoster from "@/components/film/FilmPoster";
+
 
 export default function FilmsPage() {
   const [page, setPage] = useState(1);
@@ -48,17 +50,20 @@ export default function FilmsPage() {
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {films.map((film: any) => (
+
+              // Setiap card film → link ke halaman detail film
+              // Card film sederhana: poster + judul + tahun rilis + rating
               <Link key={film.id} href={`/films/${film.id}`}>
                 <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition cursor-pointer">
-                  {/* Poster Film */}
-                  <img
-                    src={film.images?.[0] ?? "/placeholder.png"}
-                    alt={film.title}
-                    className="w-full aspect-[2/3] object-cover"
-                  />
+                  <div className="w-full aspect-[2/3]">
+                    <FilmPoster images={film.images} title={film.title} />
+                  </div>
                   <div className="p-2">
                     <p className="text-white text-sm font-medium truncate">{film.title}</p>
                     <p className="text-gray-400 text-xs">{film.release_date?.slice(0, 4)}</p>
+                    {film.average_rating > 0 && (
+                      <p className="text-yellow-400 text-xs">⭐ {film.average_rating}</p>
+                    )}
                   </div>
                 </div>
               </Link>

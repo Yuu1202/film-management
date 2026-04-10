@@ -5,6 +5,8 @@ import { useAuthStore } from "@/stores/authStore";
 import { useParams } from "next/navigation";
 import FilmListButton from "@/components/film-list/FilmListButton";
 import ReviewSection from "@/components/review/ReviewSection";
+import FilmPoster from "@/components/film/FilmPoster";
+
 
 export default function FilmDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -24,12 +26,9 @@ export default function FilmDetailPage() {
       <div className="flex flex-col md:flex-row gap-8">
 
         {/* Poster — fallback ke placeholder kalau images kosong */}
-        <img
-          src={film.images?.[0] ?? "/placeholder.png"}
-          alt={film.title}
-          className="w-full md:w-64 aspect-[2/3] object-cover rounded-xl"
-          onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.png"; }}
-        />
+        <div className="w-full md:w-64 aspect-[2/3] rounded-xl overflow-hidden flex-shrink-0">
+          <FilmPoster images={film.images} title={film.title} />
+        </div>
 
         <div className="flex-1">
           <h1 className="text-3xl font-bold text-white mb-2">{film.title}</h1>

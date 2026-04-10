@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useFilms } from "@/hooks/useFilms";
 import { useDebounce } from "@/hooks/useDebounce";
 import Link from "next/link";
+import FilmPoster from "@/components/film/FilmPoster";
+
 
 export default function HomePage() {
   const router = useRouter();
@@ -71,8 +73,8 @@ export default function HomePage() {
           {films.slice(0, 12).map((film: any) => (
             <Link key={film.id} href={`/films/${film.id}`}>
               <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition cursor-pointer">
-                <div className="w-full aspect-[2/3] bg-gray-700 flex items-center justify-center">
-                  <span className="text-gray-500 text-xs text-center px-2">{film.title}</span>
+                <div className="w-full aspect-[2/3]">
+                  <FilmPoster images={film.images} title={film.title} />
                 </div>
                 <div className="p-2">
                   <p className="text-white text-sm font-medium truncate">{film.title}</p>
