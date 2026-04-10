@@ -5,6 +5,13 @@ import { useFilms } from "@/hooks/useFilms";
 import Link from "next/link";
 import { useDebounce } from "@/hooks/useDebounce";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Katalog Film",
+  description: "Jelajahi semua film yang tersedia. Cari berdasarkan judul dan temukan film favoritmu.",
+};
+
 export default function FilmsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");

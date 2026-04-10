@@ -2,6 +2,13 @@
 
 import { useGenres } from "@/hooks/useGenres";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Daftar Genre",
+  description: "Lihat semua kategori genre film yang tersedia.",
+};
+
 export default function GenresPage() {
   const { data: genres, isLoading, isError } = useGenres();
 

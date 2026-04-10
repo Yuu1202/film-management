@@ -8,6 +8,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
+
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Login",
+  description: "Masuk ke akun FilmApp kamu.",
+};
+
 // Skema validasi form login
 const loginSchema = z.object({
   email: z.string().email("Email tidak valid"),

@@ -5,8 +5,18 @@ import Navbar from "@/components/layout/Navbar";
 import AuthInitializer from "@/components/layout/AuthInitializer";
 
 export const metadata: Metadata = {
-  title: "Film Management",
-  description: "Discover and manage your favorite films",
+  title: {
+    default: "FilmApp — Temukan Film Favoritmu",
+    template: "%s | FilmApp",
+  },
+  description: "Temukan, ulas, dan simpan film favoritmu. Semua dalam satu tempat.",
+  keywords: ["film", "movie", "ulasan film", "watchlist", "katalog film"],
+  openGraph: {
+    title: "FilmApp — Temukan Film Favoritmu",
+    description: "Temukan, ulas, dan simpan film favoritmu.",
+    type: "website",
+    locale: "id_ID",
+  },
 };
 
 export default function RootLayout({
