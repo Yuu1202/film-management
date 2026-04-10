@@ -20,7 +20,8 @@ export default function ReviewSection({ filmId }: Props) {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["reviews", filmId],
     queryFn: async () => {
-      const res = await api.get(`/films/${filmId}/reviews`);
+      const res = await api.get(`/reviews`, {
+  params: { film_id: filmId }});
       return res.data.data as Review[];
     },
   });
