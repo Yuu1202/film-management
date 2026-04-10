@@ -10,10 +10,7 @@ import toast from "react-hot-toast";
 
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Register",
-  description: "Buat akun FilmApp dan mulai eksplorasi film favoritmu.",
-};
+
 
 // Skema validasi form register
 const registerSchema = z.object({

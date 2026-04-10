@@ -42,15 +42,17 @@ function AdminAddFilmContent() {
   });
 
   // Kirim data film baru ke API
-  const onSubmit = async (data: FilmForm) => {
-    try {
-      await api.post("/films", data);
-      toast.success("Film berhasil ditambahkan!");
-      router.push("/films");
-    } catch {
-      toast.error("Gagal menambahkan film");
-    }
-  };
+ const onSubmit = async (data: FilmForm) => {
+  try {
+    console.log("Sending:", data); // debug dulu
+    await api.post("/films", data);
+    toast.success("Film berhasil ditambahkan!");
+    router.push("/films");
+  } catch (err: any) {
+    console.error("Error:", err.response?.data);
+    toast.error("Gagal menambahkan film");
+  }
+};;
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-10">
