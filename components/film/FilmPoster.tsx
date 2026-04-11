@@ -30,9 +30,38 @@ export default function FilmPoster({ images, title, className = "" }: Props) {
   }
 
   // Fallback — warna gradient acak dengan judul film
+if (hasImage) {
+    return (
+      <img
+        src={`${BASE_IMAGE_URL}${images[0]}`}
+        alt={title}
+        className={`w-full h-full object-cover ${className}`}
+        onError={(e) => {
+          const parent = (e.target as HTMLImageElement).parentElement;
+          if (parent) {
+            (e.target as HTMLImageElement).style.display = "none";
+          }
+        }}
+      />
+    );
+  }
+
   return (
-    <div className={`w-full h-full bg-gradient-to-b ${getFilmColor(title)} flex items-end p-2 ${className}`}>
-      <p className="text-white text-xs font-medium leading-tight line-clamp-3">{title}</p>
+    <div
+      className={`w-full h-full flex flex-col items-center justify-center gap-2 ${className}`}
+      style={{
+        background: "linear-gradient(160deg, var(--color-main), color-mix(in srgb, var(--color-accent) 30%, var(--color-main)))",
+        fontFamily: "'Nunito', sans-serif",
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: 4, width: "55%", alignItems: "center" }}>
+        <div style={{ width: "100%", height: 3, borderRadius: 2, background: "rgba(255,255,255,0.2)" }} />
+        <div style={{ width: "75%", height: 3, borderRadius: 2, background: "rgba(255,255,255,0.15)" }} />
+        <div style={{ width: "88%", height: 3, borderRadius: 2, background: "rgba(255,255,255,0.1)" }} />
+      </div>
+      <p style={{ color: "rgba(255,255,255,0.85)", fontSize: 10, fontWeight: 700, textAlign: "center", padding: "0 8px", lineHeight: 1.4, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+        {title}
+      </p>
     </div>
   );
 }

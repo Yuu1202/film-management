@@ -3,6 +3,7 @@ import "./globals.css";
 import Providers from "@/components/layout/Providers";
 import Navbar from "@/components/layout/Navbar";
 import AuthInitializer from "@/components/layout/AuthInitializer";
+import ThemeInitializer from "@/components/layout/ThemeInitializer";
 
 export const metadata: Metadata = {
   title: {
@@ -30,6 +31,7 @@ export default function RootLayout({
         <Providers>
           {/* Auto-restore session saat app dibuka */}
           <AuthInitializer />
+          <ThemeInitializer />
           <Navbar />
           <main className="min-h-screen bg-gray-950 text-white">
             {children}

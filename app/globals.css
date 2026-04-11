@@ -24,3 +24,44 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ==============================
+   THEME: PURPLE (default)
+   Ganti nilai warna di bawah sesuai keinginan
+   ============================== */
+[data-theme="purple"] {
+  --color-main: #322b5e;        /* Deep Navy Blue (Baju utama) */
+  --color-second: #8b1e3f;      /* Crimson/Maroon (Lengan baju) */
+  --color-accent: #5e66ff;      /* Blue Rose (Mawar biru di topi/dada) */
+  --color-bg: #1a162e;          /* Darker shade of navy */
+  --color-surface: #2d264f;     /* Background panel */
+  --color-text: #f5f3ff;        /* White-ish Purple */
+  --color-text-muted: #9489b9;  /* Muted violet */
+}
+/* ==============================
+   THEME: DARK
+   Ganti nilai warna di bawah sesuai keinginan
+   ============================== */
+[data-theme="dark"] {
+  --color-main: #4a2c6d;        /* Halloween Purple (Sayap & pita) */
+  --color-second: #f39c12;      /* Pumpkin Orange (Kerah & aksen labu) */
+  --color-accent: #ffd700;      /* Gold (Detail kancing & bros) */
+  --color-bg: #120d18;          /* Midnight Black-Purple */
+  --color-surface: #241b2f;     /* Dark panel */
+  --color-text: #ffffff;        /* Pure white */
+  --color-text-muted: #b19cd9;  /* Light Lavender */
+}
+
+/* ==============================
+   THEME: LIGHT
+   Ganti nilai warna di bawah sesuai keinginan
+   ============================== */
+[data-theme="light"] {
+  --color-main: #4cbfa6;        /* Mint Green (Warna baju utama) */
+  --color-second: #fff4d2;      /* Cream/Soft Yellow (Warna apron) */
+  --color-accent: #f08080;      /* Coral Pink (Detail bunga & wortel) */
+  --color-bg: #fffbf0;          /* Warm White background */
+  --color-surface: #e8f5f1;     /* Soft Mint surface */
+  --color-text: #2d4f47;        /* Deep Green-Grey for text */
+  --color-text-muted: #78a89b;  /* Muted Teal */
+}
