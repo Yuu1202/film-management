@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuthStore } from "@/stores/authStore";
 import { useAuth } from "@/hooks/useAuth";
@@ -10,14 +11,18 @@ export default function Navbar() {
   const { user } = useAuthStore();
   const { logout } = useAuth();
   const router = useRouter();
+  const { theme, setTheme } = useThemeStore();
+
+  // --- FIX HYDRATION ERROR ---
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = () => {
     logout();
     router.push("/login");
   };
-
-
-  const { theme, setTheme } = useThemeStore();
 
   const themes: { value: Theme; emoji: string }[] = [
     { value: "purple", emoji: "💜" },
@@ -25,7 +30,7 @@ export default function Navbar() {
     { value: "light", emoji: "🤍" },
   ];
 
-return (
+  return (
     <nav
       style={{
         background: "var(--color-surface)",
@@ -44,28 +49,58 @@ return (
     >
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Nunito:wght@400;600;700&display=swap');`}</style>
 
-      {/* Theme switcher */}
-      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        {themes.map((t) => (
-          <button
-            key={t.value}
-            onClick={() => setTheme(t.value)}
-            title={t.value}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              fontSize: 18,
-              padding: "2px 4px",
-              borderRadius: 6,
-              transition: "transform 0.2s, opacity 0.2s",
-              transform: theme === t.value ? "scale(1.3)" : "scale(1)",
-              opacity: theme === t.value ? 1 : 0.4,
-            }}
-          >
-            {t.emoji}
-          </button>
-        ))}
+      {/* Theme switcher — slide toggle */}
+      <div style={{ display: "flex", alignItems: "center", minWidth: 80 }}>
+        {mounted && (
+          <div style={{
+            display: "flex",
+            background: "color-mix(in srgb, var(--color-accent) 10%, transparent)",
+            border: "1px solid color-mix(in srgb, var(--color-accent) 25%, transparent)",
+            borderRadius: 20,
+            padding: 3,
+            gap: 2,
+            position: "relative",
+          }}>
+            {/* Sliding indicator */}
+            <div style={{
+              position: "absolute",
+              top: 3,
+              left: 3 + themes.findIndex(t => t.value === theme) * 30,
+              width: 28,
+              height: 28,
+              background: "color-mix(in srgb, var(--color-accent) 30%, transparent)",
+              borderRadius: 16,
+              transition: "left 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            }} />
+            
+            {themes.map((t) => (
+              <button
+                key={t.value}
+                onClick={() => setTheme(t.value)}
+                title={t.value}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 15,
+                  width: 28,
+                  height: 28,
+                  borderRadius: 16,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative",
+                  zIndex: 1,
+                  transition: "transform 0.2s",
+                  transform: theme === t.value ? "scale(1.15)" : "scale(0.9)",
+                  opacity: theme === t.value ? 1 : 0.5,
+                }}
+              >
+                {t.emoji}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Logo */}

@@ -26,13 +26,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Providers>
-          {/* Auto-restore session saat app dibuka */}
+          {/* Initializers untuk menghidupkan Auth State dan Theme State saat pertama kali load */}
           <AuthInitializer />
           <ThemeInitializer />
+          
           <Navbar />
+          
+          {/* Catatan: bg-gray-950 dan text-white di sini adalah fallback. 
+            Warna asli akan diatur oleh ThemeInitializer melalui variabel CSS.
+          */}
           <main className="min-h-screen bg-gray-950 text-white">
             {children}
           </main>
