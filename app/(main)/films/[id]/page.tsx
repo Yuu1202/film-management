@@ -32,7 +32,18 @@ export default function FilmDetailPage() {
 
         <div className="flex-1">
           <h1 className="text-3xl font-bold text-white mb-2">{film.title}</h1>
-          <p className="text-gray-400 text-sm mb-2">{film.release_date?.slice(0, 4)}</p>
+          <p className="text-gray-400 text-sm mb-2">
+            {film.release_date?.slice(0, 4)}
+            {film.release_date && (
+              <span className="ml-2">
+                ({new Date(film.release_date).toLocaleDateString("id-ID", {
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric",
+                })})
+              </span>
+            )}
+          </p>
           <p className="text-gray-400 text-sm mb-4 capitalize">
             {film.airing_status?.replace(/_/g, " ")} · {film.total_episodes} episode
           </p>
