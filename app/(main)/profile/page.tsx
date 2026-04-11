@@ -5,6 +5,7 @@ import api from "@/lib/api";
 import { useAuthStore } from "@/stores/authStore";
 import ProtectedRoute from "@/components/layout/ProtectedRoute";
 import toast from "react-hot-toast";
+import { useState, useEffect } from "react";
 
 export default function ProfilePage() {
   return (
@@ -18,7 +19,9 @@ function ProfileContent() {
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
 
-  // Ambil data user lengkap termasuk film_lists
+  // Simpan visibility state lokal per item watchlist
+  const [visibilityMap, setVisibilityMap] = useState<Record<string, string>>({});
+
   const { data: userData, isLoading } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: async () => {
@@ -28,27 +31,39 @@ function ProfileContent() {
     enabled: !!user?.id,
   });
 
-  // Mutation untuk ubah visibilitas watchlist
+  // Inisialisasi visibility map dengan default "private" karena API tidak return field ini
+  useEffect(() => {
+    if (!userData?.film_lists) return;
+    setVisibilityMap((prev) => {
+      const next = { ...prev };
+      userData.film_lists.forEach((item: any) => {
+        if (!(item.id in next)) {
+          next[item.id] = item.visibility ?? "private";
+        }
+      });
+      return next;
+    });
+  }, [userData]);
+
   const toggleVisibility = useMutation({
     mutationFn: async ({ id, visibility }: { id: string; visibility: string }) => {
-      const res = await api.patch(`/film-lists/${id}`, { visibility });
-      return res.data;
+      await api.patch(`/film-lists/${id}`, { visibility });
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       toast.success("Visibilitas diperbarui!");
-      // Invalidate query agar data watchlist refresh
-      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
+      // Hanya update state lokal, TIDAK invalidate query
+      setVisibilityMap((prev) => ({
+        ...prev,
+        [variables.id]: variables.visibility,
+      }));
     },
-    onError: (err: any) => {
-      toast.error(err?.response?.data?.error ?? "Gagal mengubah visibilitas");
-    },
+    onError: () => toast.error("Gagal mengubah visibilitas"),
   });
 
   const watchlist = userData?.film_lists ?? [];
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-10">
-      {/* Info profil */}
       <div className="bg-gray-800 rounded-xl p-8 mb-8 text-center">
         <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
           {user?.display_name?.charAt(0).toUpperCase()}
@@ -58,7 +73,6 @@ function ProfileContent() {
         {user?.bio && <p className="text-gray-300 text-sm">{user.bio}</p>}
       </div>
 
-      {/* Watchlist */}
       <h2 className="text-xl font-bold text-white mb-4">🎬 Watchlist Saya</h2>
 
       {isLoading && <p className="text-gray-400">Memuat watchlist...</p>}
@@ -68,35 +82,36 @@ function ProfileContent() {
       )}
 
       <div className="flex flex-col gap-4">
-        {watchlist.map((item: any) => (
-          <div
-            key={item.id}
-            className="bg-gray-800 rounded-xl p-4 flex items-center justify-between"
-          >
-            <div>
-              <p className="text-white font-medium">{item.film_title}</p>
-              <p className="text-gray-400 text-xs capitalize">{item.list_status}</p>
-            </div>
-
-            {/* Toggle visibility — optimistic update */}
-            <button
-              onClick={() =>
-                toggleVisibility.mutate({
-                  id: item.id,
-                  visibility: item.visibility === "public" ? "private" : "public",
-                })
-              }
-              disabled={toggleVisibility.isPending}
-              className={`text-xs px-3 py-1 rounded-full transition disabled:opacity-50 ${
-                item.visibility === "public"
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-gray-600 hover:bg-gray-500"
-              } text-white`}
+        {watchlist.map((item: any) => {
+          const currentVisibility = visibilityMap[item.id] ?? "private";
+          return (
+            <div
+              key={item.id}
+              className="bg-gray-800 rounded-xl p-4 flex items-center justify-between"
             >
-              {item.visibility === "public" ? "🌐 Publik" : "🔒 Privat"}
-            </button>
-          </div>
-        ))}
+              <div>
+                <p className="text-white font-medium">{item.film_title}</p>
+                <p className="text-gray-400 text-xs capitalize">{item.list_status}</p>
+              </div>
+
+              <button
+                onClick={() =>
+                  toggleVisibility.mutate({
+                    id: item.id,
+                    visibility: currentVisibility === "public" ? "private" : "public",
+                  })
+                }
+                disabled={toggleVisibility.isPending}
+                className={`text-xs px-3 py-1 rounded-full transition disabled:opacity-50 ${currentVisibility === "public"
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-gray-600 hover:bg-gray-500"
+                  } text-white`}
+              >
+                {currentVisibility === "public" ? "🌐 Publik" : "🔒 Privat"}
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
