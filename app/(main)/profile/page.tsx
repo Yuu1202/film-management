@@ -52,7 +52,7 @@ function ProfileContent() {
     onSuccess: (_, variables) => {
       // PERUBAHAN 1: Troll Toast
       toast("⏳ Menunggu backend menambahkan field visibility di response GET /users/:id");
-      
+
       // Tetap update state lokal agar UI berubah
       setVisibilityMap((prev) => ({
         ...prev,
@@ -220,7 +220,7 @@ function ProfileContent() {
               <div className="flex justify-between items-start mb-2">
                 <p style={{ fontSize: 14, fontWeight: 700, color: "var(--color-text)" }}>{rev.film}</p>
                 <div style={{ color: "#FFD700", fontSize: 12 }}>
-                  {"★".repeat(rev.rating)}{"☆".repeat(5 - rev.rating)}
+                  ★ {rev.rating}/10
                 </div>
               </div>
               <p style={{ fontSize: 13, color: "var(--color-text-muted)", lineHeight: 1.5, fontStyle: "italic" }}>
