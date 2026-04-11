@@ -1,13 +1,23 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
 import { useFilms } from "@/hooks/useFilms";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation"; // Import navigasi
+import { useSearchParams, useRouter } from "next/navigation";
 import { useDebounce } from "@/hooks/useDebounce";
 import FilmPoster from "@/components/film/FilmPoster";
 
-export default function FilmsPage() {
+// ── WRAPPER DENGAN SUSPENSE ──
+export default function FilmsPageWrapper() {
+  return (
+    <Suspense fallback={null}>
+      <FilmsPage />
+    </Suspense>
+  );
+}
+
+// ── KOMPONEN UTAMA (DIRENAME AGAR TIDAK DEFAULT EXPORT) ──
+function FilmsPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
@@ -22,7 +32,6 @@ export default function FilmsPage() {
   const debouncedSearch = useDebounce(search, 500);
 
   // --- DATA FETCHING ---
-  // Kita hanya fetch jika tidak sedang dalam mode 'genre' agar hemat resource
   const { data, isLoading, isError } = useFilms(page, debouncedSearch);
 
   const films = useMemo(() => data?.data ?? [], [data]);
@@ -30,7 +39,7 @@ export default function FilmsPage() {
 
   // --- HANDLERS ---
   const clearGenreFilter = () => {
-    router.push("/films"); // Menghapus semua query params
+    router.push("/films"); 
   };
 
   // ── RENDER OVERLAY "IN PROGRESS" ──
@@ -62,7 +71,6 @@ export default function FilmsPage() {
           </button>
         </div>
 
-        {/* Latar belakang orb agar konsisten dengan tema */}
         <div className="absolute rounded-full" style={{ width: 500, height: 500, background: "var(--color-accent)", filter: "blur(120px)", opacity: 0.05 }} />
       </div>
     );
@@ -116,7 +124,6 @@ export default function FilmsPage() {
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl opacity-50">🔍</span>
             </div>
 
-            {/* Grid & Loading Logic (Sama seperti sebelumnya) */}
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
                 <div className="flex gap-2">
@@ -158,7 +165,7 @@ export default function FilmsPage() {
                   ))}
                 </div>
 
-                {/* Pagination (Sama seperti sebelumnya) */}
+                {/* Pagination */}
                 <div className="flex items-center justify-center gap-6 mt-12">
                   <button
                     disabled={page === 1}
