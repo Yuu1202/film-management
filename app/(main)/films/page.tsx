@@ -1,6 +1,6 @@
 "use client";
 
-export const dynamic = 'force-dynamic'; // <--- TAMBAHKAN BARIS INI
+
 import { useState, useEffect } from "react";
 import { useFilms } from "@/hooks/useFilms";
 import { useGenres } from "@/hooks/useGenres";
