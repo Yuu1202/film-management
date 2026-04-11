@@ -7,6 +7,9 @@ import { useDebounce } from "@/hooks/useDebounce";
 import Link from "next/link";
 import FilmPoster from "@/components/film/FilmPoster";
 import api from "@/lib/api";
+import WaifuIllustration from "@/components/layout/WaifuIllustration";
+
+
 
 export default function HomePage() {
   const router = useRouter();
@@ -42,6 +45,7 @@ export default function HomePage() {
       className="min-h-screen relative overflow-hidden"
       style={{ background: "var(--color-bg)", fontFamily: "'Nunito', sans-serif" }}
     >
+
       {/* Google Font */}
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Nunito:wght@400;600;700&display=swap');`}</style>
 
@@ -140,9 +144,9 @@ export default function HomePage() {
               marginBottom: 8,
             }}
           >
-            Film
+            Rice
             <span style={{ color: "var(--color-accent)", position: "relative" }}>
-              App
+              FILM
               <span
                 style={{
                   position: "absolute",
@@ -382,6 +386,7 @@ export default function HomePage() {
           50% { opacity: 0.25; }
         }
       `}</style>
+      <WaifuIllustration page="1" />
     </div>
   );
 }

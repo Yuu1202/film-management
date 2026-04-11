@@ -50,8 +50,10 @@ function ProfileContent() {
       await api.patch(`/film-lists/${id}`, { visibility });
     },
     onSuccess: (_, variables) => {
-      toast.success("Visibilitas diperbarui!");
-      // Hanya update state lokal, TIDAK invalidate query
+      // PERUBAHAN 1: Troll Toast
+      toast("⏳ Menunggu backend menambahkan field visibility di response GET /users/:id");
+      
+      // Tetap update state lokal agar UI berubah
       setVisibilityMap((prev) => ({
         ...prev,
         [variables.id]: variables.visibility,
@@ -61,8 +63,9 @@ function ProfileContent() {
   });
 
   const watchlist = userData?.film_lists ?? [];
+  const reviews = userData?.reviews ?? [];
 
-return (
+  return (
     <div
       className="min-h-screen relative overflow-hidden"
       style={{ background: "var(--color-bg)", fontFamily: "'Nunito', sans-serif" }}
@@ -70,8 +73,8 @@ return (
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Nunito:wght@400;600;700&display=swap');
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
-        .watchlist-card { transition: border-color 0.2s; }
-        .watchlist-card:hover { border-color: color-mix(in srgb, var(--color-accent) 50%, transparent) !important; }
+        .watchlist-card, .review-card { transition: border-color 0.2s; }
+        .watchlist-card:hover, .review-card:hover { border-color: color-mix(in srgb, var(--color-accent) 50%, transparent) !important; }
       `}</style>
 
       {/* Ambient orbs */}
@@ -79,11 +82,6 @@ return (
         <div className="absolute rounded-full" style={{ width: 400, height: 400, top: -100, right: -80, background: "var(--color-accent)", filter: "blur(90px)", opacity: 0.09 }} />
         <div className="absolute rounded-full" style={{ width: 300, height: 300, bottom: -80, left: -100, background: "var(--color-second)", filter: "blur(80px)", opacity: 0.09 }} />
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg, transparent, var(--color-accent), transparent)", opacity: 0.4 }} />
-        <div style={{ position: "absolute", top: 24, right: 24, display: "grid", gridTemplateColumns: "repeat(5, 8px)", gap: 6, opacity: 0.1 }}>
-          {Array.from({ length: 15 }).map((_, i) => (
-            <div key={i} style={{ width: 4, height: 4, background: "var(--color-accent)", transform: "rotate(45deg)" }} />
-          ))}
-        </div>
       </div>
 
       <div className="relative z-10 max-w-3xl mx-auto px-6 py-10">
@@ -98,22 +96,14 @@ return (
             padding: "40px 32px 32px",
           }}
         >
-          {/* Top accent line */}
           <div style={{ position: "absolute", top: 0, left: "20%", right: "20%", height: 2, background: "linear-gradient(90deg, transparent, var(--color-accent), transparent)" }} />
 
-          {/* Avatar */}
           <div
             className="mx-auto mb-4 flex items-center justify-center"
             style={{
-              width: 72,
-              height: 72,
-              borderRadius: "50%",
-              background: "var(--color-main)",
-              border: "2px solid var(--color-accent)",
-              fontSize: 28,
-              fontWeight: 700,
-              color: "var(--color-text)",
-              fontFamily: "'Cinzel', serif",
+              width: 72, height: 72, borderRadius: "50%",
+              background: "var(--color-main)", border: "2px solid var(--color-accent)",
+              fontSize: 28, fontWeight: 700, color: "var(--color-text)", fontFamily: "'Cinzel', serif",
               boxShadow: "0 0 24px color-mix(in srgb, var(--color-accent) 30%, transparent)",
             }}
           >
@@ -126,12 +116,10 @@ return (
           <p style={{ fontSize: 13, color: "var(--color-accent)", fontWeight: 700, marginBottom: 6, letterSpacing: "0.06em" }}>
             @{user?.username}
           </p>
-          {user?.bio && (
-            <p style={{ fontSize: 13, color: "var(--color-text-muted)", lineHeight: 1.6 }}>{user.bio}</p>
-          )}
+          {user?.bio && <p style={{ fontSize: 13, color: "var(--color-text-muted)", lineHeight: 1.6 }}>{user.bio}</p>}
         </div>
 
-        {/* ── WATCHLIST HEADER ── */}
+        {/* ── WATCHLIST SECTION ── */}
         <div className="flex items-center gap-3 mb-2">
           <div style={{ width: 3, height: 22, background: "var(--color-accent)", borderRadius: 2 }} />
           <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 18, fontWeight: 700, color: "var(--color-text)", letterSpacing: "0.04em" }}>
@@ -144,23 +132,20 @@ return (
           <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, var(--color-main), transparent)" }} />
         </div>
 
-        {/* ── LOADING ── */}
         {isLoading && (
-          <div className="flex items-center gap-3" style={{ color: "var(--color-text-muted)", fontSize: 14 }}>
+          <div className="flex items-center gap-3 mb-8" style={{ color: "var(--color-text-muted)", fontSize: 14 }}>
             {[0, 1, 2].map((i) => (
               <span key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--color-accent)", display: "inline-block", animation: `pulse 1.2s ${i * 0.2}s infinite` }} />
             ))}
-            Memuat watchlist...
+            Memuat data...
           </div>
         )}
 
-        {/* ── EMPTY ── */}
         {!isLoading && watchlist.length === 0 && (
-          <p style={{ color: "var(--color-text-muted)", fontSize: 14 }}>Belum ada film di watchlist.</p>
+          <p className="mb-8" style={{ color: "var(--color-text-muted)", fontSize: 14 }}>Belum ada film di watchlist.</p>
         )}
 
-        {/* ── WATCHLIST ITEMS ── */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 mb-12">
           {watchlist.map((item: any) => {
             const currentVisibility = visibilityMap[item.id] ?? "private";
             const isPublic = currentVisibility === "public";
@@ -177,51 +162,20 @@ return (
                   overflow: "hidden",
                 }}
               >
-                {/* Corner accent */}
                 <div style={{ position: "absolute", top: 0, right: 0, width: 0, height: 0, borderStyle: "solid", borderWidth: "0 14px 14px 0", borderColor: `transparent color-mix(in srgb, var(--color-accent) 30%, transparent) transparent transparent` }} />
-
                 <div>
-                  <p style={{ fontSize: 14, fontWeight: 700, color: "var(--color-text)", marginBottom: 3 }}>
-                    {item.film_title}
-                  </p>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      color: "var(--color-accent)",
-                      background: "color-mix(in srgb, var(--color-accent) 15%, transparent)",
-                      borderRadius: 999,
-                      padding: "2px 8px",
-                      textTransform: "capitalize",
-                      letterSpacing: "0.06em",
-                    }}
-                  >
+                  <p style={{ fontSize: 14, fontWeight: 700, color: "var(--color-text)", marginBottom: 3 }}>{item.film_title}</p>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: "var(--color-accent)", background: "color-mix(in srgb, var(--color-accent) 15%, transparent)", borderRadius: 999, padding: "2px 8px", textTransform: "capitalize" }}>
                     {item.list_status}
                   </span>
                 </div>
-
                 <button
-                  onClick={() =>
-                    toggleVisibility.mutate({
-                      id: item.id,
-                      visibility: isPublic ? "private" : "public",
-                    })
-                  }
+                  onClick={() => toggleVisibility.mutate({ id: item.id, visibility: isPublic ? "private" : "public" })}
                   disabled={toggleVisibility.isPending}
                   style={{
-                    fontSize: 11,
-                    fontWeight: 700,
-                    padding: "6px 14px",
-                    borderRadius: 999,
-                    border: "1px solid",
+                    fontSize: 11, fontWeight: 700, padding: "6px 14px", borderRadius: 999, border: "1px solid",
                     cursor: toggleVisibility.isPending ? "not-allowed" : "pointer",
-                    opacity: toggleVisibility.isPending ? 0.5 : 1,
-                    transition: "opacity 0.2s",
-                    fontFamily: "'Nunito', sans-serif",
-                    letterSpacing: "0.06em",
-                    background: isPublic
-                      ? "color-mix(in srgb, var(--color-accent) 20%, transparent)"
-                      : "color-mix(in srgb, var(--color-main) 40%, transparent)",
+                    background: isPublic ? "color-mix(in srgb, var(--color-accent) 20%, transparent)" : "color-mix(in srgb, var(--color-main) 40%, transparent)",
                     borderColor: isPublic ? "var(--color-accent)" : "var(--color-main)",
                     color: isPublic ? "var(--color-accent)" : "var(--color-text-muted)",
                   }}
@@ -231,6 +185,49 @@ return (
               </div>
             );
           })}
+        </div>
+
+        {/* ── PERUBAHAN 2: SECTION ULASAN ── */}
+        <div className="flex items-center gap-3 mb-2">
+          <div style={{ width: 3, height: 22, background: "var(--color-accent)", borderRadius: 2 }} />
+          <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 18, fontWeight: 700, color: "var(--color-text)", letterSpacing: "0.04em" }}>
+            Ulasan Saya
+          </h2>
+        </div>
+        <div className="flex items-center gap-3 mb-6">
+          <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, transparent, var(--color-main))" }} />
+          <div style={{ width: 5, height: 5, background: "var(--color-accent)", transform: "rotate(45deg)", flexShrink: 0 }} />
+          <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, var(--color-main), transparent)" }} />
+        </div>
+
+        {!isLoading && reviews.length === 0 && (
+          <p style={{ color: "var(--color-text-muted)", fontSize: 14 }}>Belum ada ulasan yang ditulis.</p>
+        )}
+
+        <div className="flex flex-col gap-3">
+          {reviews.map((rev: any, idx: number) => (
+            <div
+              key={idx}
+              className="review-card"
+              style={{
+                background: "var(--color-surface)",
+                borderRadius: 12,
+                border: "1px solid color-mix(in srgb, var(--color-accent) 15%, transparent)",
+                padding: "16px",
+                position: "relative",
+              }}
+            >
+              <div className="flex justify-between items-start mb-2">
+                <p style={{ fontSize: 14, fontWeight: 700, color: "var(--color-text)" }}>{rev.film}</p>
+                <div style={{ color: "#FFD700", fontSize: 12 }}>
+                  {"★".repeat(rev.rating)}{"☆".repeat(5 - rev.rating)}
+                </div>
+              </div>
+              <p style={{ fontSize: 13, color: "var(--color-text-muted)", lineHeight: 1.5, fontStyle: "italic" }}>
+                "{rev.comment}"
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

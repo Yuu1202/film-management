@@ -118,7 +118,7 @@ export default function Navbar() {
           transform: "translateX(-50%)",
         }}
       >
-        Film<span style={{ color: "var(--color-accent)" }}>App</span>
+        Rice<span style={{ color: "var(--color-accent)" }}>FILM</span>
       </Link>
 
       {/* Nav links */}
