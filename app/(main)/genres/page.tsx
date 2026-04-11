@@ -63,7 +63,8 @@ export default function GenresPage() {
         {/* ── GRID ── */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {genres?.map((genre: { id: string; name: string }) => (
-            <Link key={genre.id} href="/films" style={{ textDecoration: "none" }}>
+            /* Perubahan di sini: tambahkan query parameter genre pada href */
+            <Link key={genre.id} href={`/films?genre=${genre.id}`} style={{ textDecoration: "none" }}>
               <div
                 className="genre-card"
                 style={{

@@ -3,10 +3,17 @@
 import { useState, useMemo } from "react";
 import { useFilms } from "@/hooks/useFilms";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation"; // Import navigasi
 import { useDebounce } from "@/hooks/useDebounce";
 import FilmPoster from "@/components/film/FilmPoster";
 
 export default function FilmsPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  
+  // Baca query param 'genre'
+  const genreId = searchParams.get("genre");
+
   // --- STATES ---
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -15,10 +22,51 @@ export default function FilmsPage() {
   const debouncedSearch = useDebounce(search, 500);
 
   // --- DATA FETCHING ---
+  // Kita hanya fetch jika tidak sedang dalam mode 'genre' agar hemat resource
   const { data, isLoading, isError } = useFilms(page, debouncedSearch);
 
   const films = useMemo(() => data?.data ?? [], [data]);
   const meta = data?.meta?.[0];
+
+  // --- HANDLERS ---
+  const clearGenreFilter = () => {
+    router.push("/films"); // Menghapus semua query params
+  };
+
+  // ── RENDER OVERLAY "IN PROGRESS" ──
+  if (genreId) {
+    return (
+      <div 
+        className="min-h-screen flex flex-col items-center justify-center p-6 text-center"
+        style={{ background: "var(--color-bg)", fontFamily: "'Nunito', sans-serif" }}
+      >
+        <div className="relative z-10">
+          <h2 style={{ fontFamily: "'Cinzel', serif", fontSize: 42, color: "var(--color-accent)", marginBottom: 16 }}>
+            In Progress
+          </h2>
+          <p className="text-gray-400 mb-8 max-w-md mx-auto">
+            Waiting backend adding filter_by=genre
+            <br />
+          </p>
+          
+          <button
+            onClick={clearGenreFilter}
+            className="px-8 py-3 rounded-full font-bold transition-all hover:scale-105 active:scale-95"
+            style={{ 
+              background: "var(--color-accent)", 
+              color: "var(--color-bg)",
+              boxShadow: "0 0 20px color-mix(in srgb, var(--color-accent) 40%, transparent)"
+            }}
+          >
+            ← Kembali ke Daftar Film
+          </button>
+        </div>
+
+        {/* Latar belakang orb agar konsisten dengan tema */}
+        <div className="absolute rounded-full" style={{ width: 500, height: 500, background: "var(--color-accent)", filter: "blur(120px)", opacity: 0.05 }} />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -52,9 +100,8 @@ export default function FilmsPage() {
         </div>
 
         <div className="flex flex-col gap-8">
-          {/* ── MAIN CONTENT ── */}
           <main className="flex-1 min-w-0">
-            {/* Search Bar Film */}
+            {/* Search Bar */}
             <div className="mb-8 relative max-w-md">
               <input
                 type="text"
@@ -69,7 +116,7 @@ export default function FilmsPage() {
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl opacity-50">🔍</span>
             </div>
 
-            {/* Loading State */}
+            {/* Grid & Loading Logic (Sama seperti sebelumnya) */}
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
                 <div className="flex gap-2">
@@ -85,7 +132,6 @@ export default function FilmsPage() {
               </div>
             ) : (
               <>
-                {/* Grid Film */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
                   {films.map((film: any) => (
                     <Link key={film.id} href={`/films/${film.id}`} className="group">
@@ -112,11 +158,7 @@ export default function FilmsPage() {
                   ))}
                 </div>
 
-                {films.length === 0 && (
-                  <div className="text-center py-20 opacity-50">Tidak ada film ditemukan.</div>
-                )}
-
-                {/* Pagination */}
+                {/* Pagination (Sama seperti sebelumnya) */}
                 <div className="flex items-center justify-center gap-6 mt-12">
                   <button
                     disabled={page === 1}

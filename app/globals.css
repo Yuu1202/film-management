@@ -44,7 +44,7 @@ body {
    ============================== */
 [data-theme="dark"] {
   --color-main: #4a2c6d;        /* Halloween Purple (Sayap & pita) */
-  --color-second: #f39c12;      /* Pumpkin Orange (Kerah & aksen labu) */
+  --color-second: #c67f0d;      /* Pumpkin Orange (Kerah & aksen labu) */
   --color-accent: #ffd700;      /* Gold (Detail kancing & bros) */
   --color-bg: #120d18;          /* Midnight Black-Purple */
   --color-surface: #241b2f;     /* Dark panel */
@@ -58,7 +58,7 @@ body {
    ============================== */
 [data-theme="light"] {
   --color-main: #4cbfa6;        /* Mint Green (Warna baju utama) */
-  --color-second: #fff4d2;      /* Cream/Soft Yellow (Warna apron) */
+  --color-second: #fbd562;      /* Cream/Soft Yellow (Warna apron) */
   --color-accent: #f08080;      /* Coral Pink (Detail bunga & wortel) */
   --color-bg: #fffbf0;          /* Warm White background */
   --color-surface: #e8f5f1;     /* Soft Mint surface */
