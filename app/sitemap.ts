@@ -1,8 +1,7 @@
 import { MetadataRoute } from "next";
 
-// Daftar semua halaman statis untuk diindeks Google
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://film-management-71qmggopw-yuus-projects-1d9c129c.vercel.app/";
+  const baseUrl = "https://film-management.vercel.app";
 
   return [
     {
