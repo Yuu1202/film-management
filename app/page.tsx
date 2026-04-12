@@ -7,7 +7,6 @@ import { useDebounce } from "@/hooks/useDebounce";
 import Link from "next/link";
 import FilmPoster from "@/components/film/FilmPoster";
 import api from "@/lib/api";
-import WaifuIllustration from "@/components/layout/WaifuIllustration";
 
 
 
@@ -144,7 +143,7 @@ export default function HomePage() {
               marginBottom: 8,
             }}
           >
-            Rice
+            NONTON
             <span style={{ color: "var(--color-accent)", position: "relative" }}>
               FILM
               <span
@@ -386,7 +385,6 @@ export default function HomePage() {
           50% { opacity: 0.25; }
         }
       `}</style>
-      <WaifuIllustration page="1" />
     </div>
   );
 }

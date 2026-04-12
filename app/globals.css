@@ -30,26 +30,26 @@ body {
    Ganti nilai warna di bawah sesuai keinginan
    ============================== */
 [data-theme="purple"] {
-  --color-main: #322b5e;        /* Deep Navy Blue (Baju utama) */
-  --color-second: #8b1e3f;      /* Crimson/Maroon (Lengan baju) */
-  --color-accent: #5e66ff;      /* Blue Rose (Mawar biru di topi/dada) */
-  --color-bg: #1a162e;          /* Darker shade of navy */
-  --color-surface: #2d264f;     /* Background panel */
-  --color-text: #f5f3ff;        /* White-ish Purple */
-  --color-text-muted: #9489b9;  /* Muted violet */
+--color-main: #1e2a6e;
+--color-second: #6b1520;
+--color-accent: #8b2535;
+--color-bg: #080810;
+--color-surface: #0f1028;
+--color-text: #e8e0f0;
+--color-text-muted: #6a5a9e;
 }
 /* ==============================
    THEME: DARK
    Ganti nilai warna di bawah sesuai keinginan
    ============================== */
 [data-theme="dark"] {
-  --color-main: #4a2c6d;        /* Halloween Purple (Sayap & pita) */
-  --color-second: #c67f0d;      /* Pumpkin Orange (Kerah & aksen labu) */
-  --color-accent: #ffd700;      /* Gold (Detail kancing & bros) */
-  --color-bg: #120d18;          /* Midnight Black-Purple */
-  --color-surface: #241b2f;     /* Dark panel */
-  --color-text: #ffffff;        /* Pure white */
-  --color-text-muted: #b19cd9;  /* Light Lavender */
+--color-main: #6b3fa0;
+--color-second: #c47a1e;
+--color-accent: #e8601a;
+--color-bg: #f5f0f8;
+--color-surface: #e8dff0;
+--color-text: #1a0d2e;
+--color-text-muted: #9b7fc4;
 }
 
 /* ==============================
@@ -57,11 +57,11 @@ body {
    Ganti nilai warna di bawah sesuai keinginan
    ============================== */
 [data-theme="light"] {
-  --color-main: #4cbfa6;        /* Mint Green (Warna baju utama) */
-  --color-second: #fbd562;      /* Cream/Soft Yellow (Warna apron) */
-  --color-accent: #f08080;      /* Coral Pink (Detail bunga & wortel) */
-  --color-bg: #fffbf0;          /* Warm White background */
-  --color-surface: #e8f5f1;     /* Soft Mint surface */
-  --color-text: #2d4f47;        /* Deep Green-Grey for text */
-  --color-text-muted: #78a89b;  /* Muted Teal */
+--color-main: #3a8c78;
+--color-second: #3b2314;
+--color-accent: #e8c84a;
+--color-bg: #f5eedc;
+--color-surface: #e2d9c4;
+--color-text: #2a1a0e;
+--color-text-muted: #5dbfaa;
 }

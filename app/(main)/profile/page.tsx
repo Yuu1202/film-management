@@ -66,6 +66,7 @@ function ProfileContent() {
   const reviews = userData?.reviews ?? [];
 
   return (
+    
     <div
       className="min-h-screen relative overflow-hidden"
       style={{ background: "var(--color-bg)", fontFamily: "'Nunito', sans-serif" }}
@@ -231,5 +232,6 @@ function ProfileContent() {
         </div>
       </div>
     </div>
+    
   );
 }

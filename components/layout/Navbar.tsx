@@ -26,8 +26,8 @@ export default function Navbar() {
 
   const themes: { value: Theme; emoji: string }[] = [
     { value: "purple", emoji: "💜" },
-    { value: "dark", emoji: "🖤" },
-    { value: "light", emoji: "🤍" },
+    { value: "dark", emoji: "🤍" },
+    { value: "light", emoji: "💛" },
   ];
 
   return (
@@ -118,7 +118,7 @@ export default function Navbar() {
           transform: "translateX(-50%)",
         }}
       >
-        Rice<span style={{ color: "var(--color-accent)" }}>FILM</span>
+        NONTON<span style={{ color: "var(--color-accent)" }}>FILM</span>
       </Link>
 
       {/* Nav links */}
