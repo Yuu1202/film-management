@@ -7,7 +7,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Tambahkan useEffect
+import { useAuthStore } from "@/stores/authStore"; // Tambahkan useAuthStore
 
 const registerSchema = z.object({
   username: z.string().min(3, "Username minimal 3 karakter"),
@@ -23,6 +24,13 @@ export default function RegisterPage() {
   const { register: registerUser } = useAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const { token } = useAuthStore(); // Ambil token dari store
+
+  // Redirect jika sudah login
+  useEffect(() => {
+    const savedToken = token || localStorage.getItem("token");
+    if (savedToken) router.push("/profile");
+  }, [token, router]);
 
   const {
     register,

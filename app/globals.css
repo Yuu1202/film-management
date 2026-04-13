@@ -26,42 +26,43 @@ body {
 }
 
 /* ==============================
-   THEME: PURPLE (default)
-   Ganti nilai warna di bawah sesuai keinginan
+   THEME: PURPLE (Dark with Green)
+   Nuansa gelap yang dalam dengan aksen hijau neon/emerald
    ============================== */
 [data-theme="purple"] {
---color-main: #1e2a6e;
---color-second: #6b1520;
---color-accent: #8b2535;
---color-bg: #080810;
---color-surface: #0f1028;
---color-text: #e8e0f0;
---color-text-muted: #6a5a9e;
-}
-/* ==============================
-   THEME: DARK
-   Ganti nilai warna di bawah sesuai keinginan
-   ============================== */
-[data-theme="dark"] {
---color-main: #6b3fa0;
---color-second: #c47a1e;
---color-accent: #e8601a;
---color-bg: #dec5c9;
---color-surface: #e8dff0;
---color-text: #1a0d2e;
---color-text-muted: #9b7fc4;
+  --color-main: #00ff88;        /* Hijau terang untuk branding/utama */
+  --color-second: #1a4d32;      /* Hijau gelap */
+  --color-accent: #00cc6a;      /* Aksen hijau */
+  --color-bg: #0d1117;          /* Background sangat gelap */
+  --color-surface: #161b22;     /* Card/Permukaan */
+  --color-text: #e6edf3;        /* Teks hampir putih */
+  --color-text-muted: #8b949e;  /* Teks redup */
 }
 
 /* ==============================
-   THEME: LIGHT
-   Ganti nilai warna di bawah sesuai keinginan
+   THEME: DARK (Krem / Tema Kertas)
+   Memberikan kesan vintage, organik, dan hangat
+   ============================== */
+[data-theme="dark"] {
+  --color-main: #5d4037;        /* Cokelat tua untuk elemen utama */
+  --color-second: #8d6e63;      /* Cokelat medium */
+  --color-accent: #d4a373;      /* Aksen earth-tone */
+  --color-bg: #f4ecd8;          /* Background krem kertas */
+  --color-surface: #e9e0c8;     /* Permukaan kertas sedikit lebih gelap */
+  --color-text: #2c2c2c;        /* Teks hitam arang */
+  --color-text-muted: #7d7461;  /* Teks pudar khas kertas tua */
+}
+
+/* ==============================
+   THEME: LIGHT (Putih dengan Tema Biru)
+   Update: Aksen dipergelap untuk kontras teks yang lebih baik
    ============================== */
 [data-theme="light"] {
---color-main: #3a8c78;
---color-second: #3b2314;
---color-accent: #e8c84a;
---color-bg: #f5eedc;
---color-surface: #e2d9c4;
---color-text: #2a1a0e;
---color-text-muted: #5dbfaa;
+  --color-main: #0056b3;        /* Biru Royal (lebih solid) */
+  --color-second: #003d82;      /* Biru Deep */
+  --color-accent: #007bff;      /* Biru Terang (cukup kontras untuk teks putih/hitam) */
+  --color-bg: #ffffff;          /* Putih murni */
+  --color-surface: #f0f4f8;     /* Abu-abu kebiruan sangat muda */
+  --color-text: #0a192f;        /* Teks biru gelap (hampir hitam) */
+  --color-text-muted: #4a5568;  /* Teks abu-abu profesional */
 }
